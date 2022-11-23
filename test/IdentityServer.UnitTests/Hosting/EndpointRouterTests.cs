@@ -52,6 +52,19 @@ public class EndpointRouterTests
     }
 
     [Fact]
+    public void Find_should_return_null_for_incorrect_sibling_path()
+    {
+        _endpoints.Add(new Duende.IdentityServer.Hosting.Endpoint("disco", "/.well-known/openid-configuration", typeof(MyEndpointHandler)));
+
+        var ctx = new DefaultHttpContext();
+        ctx.Request.Path = new PathString("/.well-known/security.txt");
+        ctx.RequestServices = new StubServiceProvider();
+
+        var result = _subject.Find(ctx);
+        result.Should().BeNull();
+    }
+
+    [Fact]
     public void Find_should_find_path()
     {
         _endpoints.Add(new Duende.IdentityServer.Hosting.Endpoint("ep1", "/ep1", typeof(MyEndpointHandler)));
